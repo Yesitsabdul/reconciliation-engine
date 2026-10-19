@@ -20,3 +20,4 @@ ENV/
 
 # Coursework / external folders
 DB labs/
+.vercel

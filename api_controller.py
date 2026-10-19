@@ -37,6 +37,7 @@ from typing import Any, Literal
 
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import Session
@@ -677,3 +678,10 @@ async def upload_payments(file: UploadFile = File(...)) -> dict:
         "status": "success",
         "payments_created": len(payments),
     }
+
+
+# ── Static frontend assets ──────────────────────────────────────────────────
+_frontend_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "frontend")
+if os.path.exists(_frontend_path):
+    app.mount("/", StaticFiles(directory=_frontend_path, html=True), name="frontend")
+
