@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconciliation Engine</title>
+    <meta name="description" content="Enterprise invoice reconciliation dashboard for matching payments to invoices using weighted confidence scoring.">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                <h1>Reconciliation Engine</h1>
+            </div>
+            <div class="status-panel">
+                <div class="timestamp" id="system-timestamp"></div>
+                <div class="health-indicator" id="health-indicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Checking…</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <ul class="nav-links">
+                    <li><a href="#dashboard" class="nav-item active" data-target="dashboard">Dashboard</a></li>
+                    <li><a href="#upload" class="nav-item" data-target="upload">Upload Data</a></li>
+                    <li><a href="#reconcile" class="nav-item" data-target="reconcile">Reconciliation</a></li>
+                    <li><a href="#reviews" class="nav-item" data-target="reviews">Manual Reviews</a></li>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="content-area" id="main-content"></main>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
