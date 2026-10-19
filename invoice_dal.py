@@ -472,25 +472,42 @@ class InvoiceDAL:
 
         with Session(self._engine) as session:
             with session.begin():
-                review = ManualReviewRow(
-                    invoice_id=invoice_id,
-                    payment_id=payment_id,
-                    amount_score=Decimal(str(result.amount_score)),
-                    reference_score=Decimal(str(result.reference_score)),
-                    timing_score=Decimal(str(result.timing_score)),
-                    entity_score=Decimal(str(result.entity_score)),
-                    weighted_confidence=Decimal(
+                existing = session.execute(
+                    select(ManualReviewRow).where(
+                        ManualReviewRow.invoice_id == invoice_id,
+                        ManualReviewRow.payment_id == payment_id,
+                    )
+                ).scalar_one_or_none()
+
+                if existing is not None:
+                    existing.amount_score = Decimal(str(result.amount_score))
+                    existing.reference_score = Decimal(str(result.reference_score))
+                    existing.timing_score = Decimal(str(result.timing_score))
+                    existing.entity_score = Decimal(str(result.entity_score))
+                    existing.weighted_confidence = Decimal(
                         str(result.weighted_confidence_index)
-                    ),
-                    score_details=json.dumps(result.details),
-                    review_status="PENDING",
-                )
-
-                if self._engine.dialect.name == "sqlite":
-                    max_id = session.scalar(select(func.max(ManualReviewRow.id)))
-                    review.id = (max_id or 0) + 1
-
-                session.add(review)
+                    )
+                    existing.score_details = json.dumps(result.details)
+                    existing.review_status = "PENDING"
+                    review = existing
+                else:
+                    review = ManualReviewRow(
+                        invoice_id=invoice_id,
+                        payment_id=payment_id,
+                        amount_score=Decimal(str(result.amount_score)),
+                        reference_score=Decimal(str(result.reference_score)),
+                        timing_score=Decimal(str(result.timing_score)),
+                        entity_score=Decimal(str(result.entity_score)),
+                        weighted_confidence=Decimal(
+                            str(result.weighted_confidence_index)
+                        ),
+                        score_details=json.dumps(result.details),
+                        review_status="PENDING",
+                    )
+                    if self._engine.dialect.name == "sqlite":
+                        max_id = session.scalar(select(func.max(ManualReviewRow.id)))
+                        review.id = (max_id or 0) + 1
+                    session.add(review)
 
                 invoice = session.get(InvoiceRow, invoice_id)
                 if invoice is not None:
